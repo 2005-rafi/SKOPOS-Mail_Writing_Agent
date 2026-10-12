@@ -74,6 +74,7 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
           : null,
       titleSpacing: showDrawerMenu ? 0 : SpacingTokens.lg,
       title: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const AppLogo(
             size: 28,
@@ -102,55 +103,48 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
               ],
             ],
           ),
-          const SizedBox(width: SpacingTokens.md),
-
-          // Backend Connection Indicator with Tap to Wake
-          AppBouncyTap(
+        ],
+      ),
+      actions: [
+        if (actions != null) ...actions!,
+        Padding(
+          padding: const EdgeInsets.only(right: SpacingTokens.md),
+          child: AppBouncyTap(
             onTap: onTapStatus,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: statusColor.withValues(alpha: 0.12),
-                borderRadius: ShapeTokens.borderRadiusFull,
-                border: Border.all(
-                  color: statusColor.withValues(alpha: 0.3),
-                  width: ShapeTokens.borderWidthHairline,
-                ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (statusIcon != null) ...[
-                    Icon(
-                      statusIcon,
-                      size: 10,
-                      color: statusColor,
-                    ),
-                  ] else ...[
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        color: statusColor,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(width: 4),
-                  Text(
-                    statusLabel,
-                    style: textTheme.labelSmall?.copyWith(
-                      color: statusColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+            child: Tooltip(
+              message: 'Server: $statusLabel (Tap to recheck)',
+              child: Container(
+                width: 22,
+                height: 22,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.14),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: statusColor.withValues(alpha: 0.32),
+                    width: ShapeTokens.borderWidthHairline,
                   ),
-                ],
+                ),
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: statusColor.withValues(alpha: 0.45),
+                        blurRadius: 4,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-        ],
-      ),
-      actions: actions,
+        ),
+      ],
     );
   }
 }

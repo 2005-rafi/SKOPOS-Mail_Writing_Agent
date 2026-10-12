@@ -58,9 +58,10 @@ void main() {
       expect(selectedType, 'letter');
       expect(find.text('Formal Letter Format'), findsOneWidget);
 
-      // Type text and verify send button enables
+      // Type text and verify character counter and send button enables
       await tester.enterText(find.byType(TextField), 'Test prompt scenario');
       await tester.pumpAndSettle();
+      expect(find.text('• 20/1500'), findsOneWidget);
 
       // Tap send button
       await tester.tap(find.byIcon(Icons.arrow_upward_rounded));

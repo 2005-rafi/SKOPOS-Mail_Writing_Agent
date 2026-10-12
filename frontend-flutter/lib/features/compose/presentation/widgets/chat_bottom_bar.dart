@@ -6,7 +6,8 @@ import '../../../../core/design_system/spacing_tokens.dart';
 import '../../../../shared/widgets/app_bouncy_tap.dart';
 
 /// Pinned bottom composer providing a strictly aligned, dual-color architecture chat interface.
-/// Includes an integrated mail vs letter format selector badge directly above the send button.
+/// Includes a bounded elastic input capsule (44px min, 5 lines max, scrollable beyond),
+/// character limitation with auxiliary micro-counter, and format switcher badge above send button.
 class ChatBottomBar extends StatefulWidget {
   const ChatBottomBar({
     super.key,
@@ -17,6 +18,7 @@ class ChatBottomBar extends StatefulWidget {
     required this.contentType,
     required this.onContentTypeChanged,
     this.hintText = 'Describe what to write, or request changes...',
+    this.maxCharacters = 1500,
   });
 
   final TextEditingController controller;
@@ -26,6 +28,7 @@ class ChatBottomBar extends StatefulWidget {
   final String contentType;
   final ValueChanged<String> onContentTypeChanged;
   final String hintText;
+  final int maxCharacters;
 
   @override
   State<ChatBottomBar> createState() => _ChatBottomBarState();
@@ -65,6 +68,7 @@ class _ChatBottomBarState extends State<ChatBottomBar> {
     return ValueListenableBuilder<TextEditingValue>(
       valueListenable: widget.controller,
       builder: (context, value, _) {
+        final currentLength = value.text.length;
         final canSend = value.text.trim().isNotEmpty && !widget.isLoading;
 
         return Container(
@@ -86,14 +90,14 @@ class _ChatBottomBarState extends State<ChatBottomBar> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // 1. Auxiliary Bar: Humanized Mode Label (Left) + Mail/Letter Switcher Badge (Right, above Send)
+              // 1. Auxiliary Bar: Humanized Mode + Micro Character Counter (Left) + Mail/Letter Switcher Badge (Right)
               Padding(
                 padding: const EdgeInsets.only(bottom: 6.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Mode Label with Status Dot
+                    // Mode Label + Character Count
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -114,6 +118,18 @@ class _ChatBottomBarState extends State<ChatBottomBar> {
                             letterSpacing: 0.2,
                           ),
                         ),
+                        if (currentLength > 0) ...[
+                          const SizedBox(width: SpacingTokens.xs),
+                          Text(
+                            '• $currentLength/${widget.maxCharacters}',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: currentLength >= (widget.maxCharacters - 100)
+                                  ? semantic.statusWarning
+                                  : semantic.textMuted,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
 
@@ -200,7 +216,7 @@ class _ChatBottomBarState extends State<ChatBottomBar> {
                 ),
               ),
 
-              // 2. Main Composer Row: [ Settings Button (44) ] [ Input Capsule ] [ Send Bubble (44) ]
+              // 2. Main Composer Row: [ Settings Button (44) ] [ Bounded Input Capsule ] [ Send Bubble (44) ]
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -231,13 +247,12 @@ class _ChatBottomBarState extends State<ChatBottomBar> {
                   ),
                   const SizedBox(width: SpacingTokens.sm),
 
-                  // Seamless Multi-line Message Input Capsule
+                  // Bounded Elastic Input Capsule (44px min, 5 lines max, scrollable beyond)
                   Expanded(
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       curve: Curves.easeOutCubic,
-                      constraints: const BoxConstraints(minHeight: 44, maxHeight: 120),
-                      alignment: Alignment.center,
+                      constraints: const BoxConstraints(minHeight: 44.0),
                       decoration: BoxDecoration(
                         color: semantic.surfaceContainer,
                         borderRadius: BorderRadius.circular(22),
@@ -253,13 +268,17 @@ class _ChatBottomBarState extends State<ChatBottomBar> {
                         controller: widget.controller,
                         focusNode: _focusNode,
                         minLines: 1,
-                        maxLines: 4,
+                        maxLines: 5,
+                        maxLength: widget.maxCharacters,
+                        buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
+                        scrollPhysics: const BouncingScrollPhysics(),
                         textInputAction: TextInputAction.send,
                         onSubmitted: (_) {
                           if (canSend) widget.onSend();
                         },
                         style: textTheme.bodyMedium?.copyWith(
                           color: semantic.textPrimary,
+                          height: 1.4,
                         ),
                         decoration: InputDecoration(
                           hintText: widget.hintText,

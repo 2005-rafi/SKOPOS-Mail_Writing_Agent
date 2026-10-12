@@ -130,77 +130,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Row(
                         children: [
                           const AppLogo(
-                            size: 46,
+                            size: 40,
                             showBorder: true,
                           ),
                           const SizedBox(width: SpacingTokens.md),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      AppConfig.appName,
-                                      style: textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.w800,
-                                        letterSpacing: 0.8,
-                                        color: semantic.textPrimary,
-                                      ),
-                                    ),
-                                    const SizedBox(width: SpacingTokens.sm),
-                                    AppBadge(
-                                      label: 'v${AppConfig.version}',
-                                      variant: AppBadgeVariant.neutral,
-                                    ),
-                                    const Spacer(),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                      decoration: BoxDecoration(
-                                        color: statusColor.withValues(alpha: 0.12),
-                                        borderRadius: ShapeTokens.borderRadiusFull,
-                                        border: Border.all(
-                                          color: statusColor.withValues(alpha: 0.3),
-                                          width: ShapeTokens.borderWidthHairline,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: 6,
-                                            height: 6,
-                                            decoration: BoxDecoration(
-                                              color: statusColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            statusLabel,
-                                            style: textTheme.labelSmall?.copyWith(
-                                              color: statusColor,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  AppConfig.appTagline,
-                                  style: textTheme.bodySmall?.copyWith(
-                                    color: semantic.textSecondary,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  'Production Cloud Engine • Presentation Client',
-                                  style: textTheme.labelSmall?.copyWith(
-                                    color: semantic.textMuted,
-                                  ),
+                          Text(
+                            AppConfig.appName,
+                            style: textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.8,
+                              color: semantic.textPrimary,
+                            ),
+                          ),
+                          const SizedBox(width: SpacingTokens.sm),
+                          AppBadge(
+                            label: 'v${AppConfig.version}',
+                            variant: AppBadgeVariant.neutral,
+                          ),
+                          const Spacer(),
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: statusColor,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: statusColor.withValues(alpha: 0.45),
+                                  blurRadius: 4,
+                                  spreadRadius: 1,
                                 ),
                               ],
                             ),
@@ -338,7 +296,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsGroup(
                     title: 'Default Writing Preferences',
                     icon: Icons.auto_stories_outlined,
-                    description: 'Set independent tone and styling standards for emails and formal letters',
                     children: [
                       AppSegmentedControl<int>(
                         options: const [
@@ -379,33 +336,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: SpacingTokens.lg),
 
-                  // 6. Data & Cloud Strategy (PRD Section 23)
-                  SettingsGroup(
-                    title: 'Data & Storage Strategy',
-                    icon: Icons.storage_rounded,
-                    children: [
-                      Text(
-                        'In accordance with PRD architecture, all communications are saved locally first for immediate offline reading. Cloud synchronization via Firebase Authentication is prepared for future multi-device sync.',
-                        style: textTheme.bodySmall?.copyWith(color: semantic.textSecondary, height: 1.4),
-                      ),
-                      const SizedBox(height: SpacingTokens.md),
-                      Row(
-                        children: const [
-                          AppBadge(
-                            label: 'Offline-First Enabled',
-                            variant: AppBadgeVariant.success,
-                          ),
-                          SizedBox(width: SpacingTokens.xs),
-                          AppBadge(
-                            label: 'Firebase Sync: Ready',
-                            variant: AppBadgeVariant.neutral,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),
