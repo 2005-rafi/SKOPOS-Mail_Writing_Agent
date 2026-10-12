@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:skopos/core/design_system/app_theme.dart';
 import 'package:skopos/features/compose/domain/compose_models.dart';
+import 'package:skopos/shared/widgets/app_bouncy_tap.dart';
 import 'package:skopos/shared/widgets/app_segmented_control.dart';
 import 'package:skopos/shared/widgets/settings_group.dart';
 import 'package:skopos/shared/widgets/writing_preferences_editor.dart';
@@ -112,6 +113,29 @@ void main() {
       // Dynamic expansion: custom tone input now exists
       expect(find.text('Describe Your Specific Tone'), findsOneWidget);
       expect(currentSettings.tone, equals('custom'));
+    });
+
+    testWidgets('AppBouncyTap renders child and fires onTap', (tester) async {
+      bool tapped = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: Scaffold(
+            body: Center(
+              child: AppBouncyTap(
+                onTap: () => tapped = true,
+                child: const Text('Bouncy Button'),
+              ),
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Bouncy Button'), findsOneWidget);
+      await tester.tap(find.text('Bouncy Button'));
+      await tester.pumpAndSettle();
+      expect(tapped, isTrue);
     });
   });
 }

@@ -4,6 +4,8 @@ import '../../core/design_system/motion_tokens.dart';
 import '../../core/design_system/semantic_colors.dart';
 import '../../core/design_system/shape_tokens.dart';
 
+import 'app_bouncy_tap.dart';
+
 /// Accessible icon button with required tooltip and theme-aware states.
 class AppIconButton extends StatelessWidget {
   const AppIconButton({
@@ -32,14 +34,13 @@ class AppIconButton extends StatelessWidget {
 
     return Tooltip(
       message: tooltip,
-      child: Material(
-        color: backgroundColor ?? Colors.transparent,
-        borderRadius: ShapeTokens.borderRadiusMd,
-        child: InkWell(
-          onTap: onPressed,
+      child: AppBouncyTap(
+        enabled: isEnabled,
+        onTap: onPressed,
+        child: Material(
+          color: backgroundColor ?? Colors.transparent,
           borderRadius: ShapeTokens.borderRadiusMd,
-          child: AnimatedContainer(
-            duration: MotionTokens.durationMicro,
+          child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Icon(
               icon,

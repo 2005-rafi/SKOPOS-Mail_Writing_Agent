@@ -4,6 +4,7 @@ import '../../core/design_system/motion_tokens.dart';
 import '../../core/design_system/semantic_colors.dart';
 import '../../core/design_system/shape_tokens.dart';
 import '../../core/design_system/spacing_tokens.dart';
+import 'app_bouncy_tap.dart';
 
 enum AppButtonVariant { primary, secondary, tonal, outlined, destructive, text }
 
@@ -125,13 +126,18 @@ class AppButton extends StatelessWidget {
       ),
     );
 
+    final bouncyButton = AppBouncyTap(
+      enabled: isEnabled,
+      child: buttonWidget,
+    );
+
     if (tooltip != null) {
       return Tooltip(
         message: tooltip!,
-        child: isFullWidth ? SizedBox(width: double.infinity, child: buttonWidget) : buttonWidget,
+        child: isFullWidth ? SizedBox(width: double.infinity, child: bouncyButton) : bouncyButton,
       );
     }
 
-    return isFullWidth ? SizedBox(width: double.infinity, child: buttonWidget) : buttonWidget;
+    return isFullWidth ? SizedBox(width: double.infinity, child: bouncyButton) : bouncyButton;
   }
 }

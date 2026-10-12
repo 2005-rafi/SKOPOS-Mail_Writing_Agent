@@ -4,6 +4,7 @@ import '../../core/design_system/semantic_colors.dart';
 import '../../core/design_system/shape_tokens.dart';
 import '../../core/design_system/spacing_tokens.dart';
 import '../../core/network/backend_health_manager.dart';
+import 'app_bouncy_tap.dart';
 import 'app_logo.dart';
 
 /// Top Application Bar with SKOPOS branding, backend status pill, and action buttons.
@@ -104,9 +105,8 @@ class AppAppBar extends StatelessWidget implements PreferredSizeWidget {
           const SizedBox(width: SpacingTokens.md),
 
           // Backend Connection Indicator with Tap to Wake
-          InkWell(
+          AppBouncyTap(
             onTap: onTapStatus,
-            borderRadius: ShapeTokens.borderRadiusFull,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
               decoration: BoxDecoration(

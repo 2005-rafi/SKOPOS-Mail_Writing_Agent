@@ -170,10 +170,9 @@ class GeneratedOutputCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              AppButton(
-                text: 'Copy Body',
-                variant: AppButtonVariant.outlined,
-                leadingIcon: Icons.content_copy_rounded,
+              AppIconButton(
+                icon: Icons.content_copy_rounded,
+                tooltip: 'Copy Body',
                 onPressed: () {
                   ClipboardHelper.copyPlainText(TextSanitizer.toPlainText(output.body));
                   AppSnackbar.show(
@@ -183,11 +182,12 @@ class GeneratedOutputCard extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(width: SpacingTokens.sm),
-              AppButton(
-                text: 'Copy All',
-                variant: AppButtonVariant.primary,
-                leadingIcon: Icons.done_all_rounded,
+              const SizedBox(width: SpacingTokens.xs),
+              AppIconButton(
+                icon: Icons.done_all_rounded,
+                tooltip: 'Copy Full Document',
+                backgroundColor: semantic.actionPrimary.withValues(alpha: 0.12),
+                color: semantic.actionPrimary,
                 onPressed: () => _copyAll(context),
               ),
             ],

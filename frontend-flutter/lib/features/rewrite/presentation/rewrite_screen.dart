@@ -12,7 +12,6 @@ import '../../../shared/widgets/app_snackbar.dart';
 import '../../../shared/widgets/app_text_area.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../../compose/presentation/widgets/generated_output_card.dart';
-import '../../compose/presentation/widgets/writing_settings_sheet.dart';
 import 'rewrite_controller.dart';
 
 /// Screen for transforming existing rough text into polished communication.
@@ -20,9 +19,11 @@ class RewriteScreen extends StatefulWidget {
   const RewriteScreen({
     super.key,
     required this.controller,
+    this.onNavigateToSettings,
   });
 
   final RewriteController controller;
+  final VoidCallback? onNavigateToSettings;
 
   @override
   State<RewriteScreen> createState() => _RewriteScreenState();
@@ -51,20 +52,6 @@ class _RewriteScreenState extends State<RewriteScreen> {
         type: AppSnackbarType.error,
       );
     }
-  }
-
-  void _showSettingsModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => WritingSettingsSheet(
-        initialSettings: widget.controller.settings,
-        onSave: (newSettings) {
-          widget.controller.updateSettings(newSettings);
-        },
-      ),
-    );
   }
 
   @override
@@ -111,7 +98,7 @@ class _RewriteScreenState extends State<RewriteScreen> {
                               ],
                             ),
                             TextButton.icon(
-                              onPressed: _showSettingsModal,
+                              onPressed: widget.onNavigateToSettings,
                               icon: Icon(
                                 Icons.tune_rounded,
                                 size: ComponentTokens.iconSizeSm,

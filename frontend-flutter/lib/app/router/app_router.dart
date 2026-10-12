@@ -49,8 +49,14 @@ class _AppScaffoldState extends State<AppScaffold> {
   @override
   Widget build(BuildContext context) {
     final screens = [
-      ComposeScreen(controller: widget.composeController),
-      RewriteScreen(controller: widget.rewriteController),
+      ComposeScreen(
+        controller: widget.composeController,
+        onNavigateToSettings: () => setState(() => _currentIndex = 3),
+      ),
+      RewriteScreen(
+        controller: widget.rewriteController,
+        onNavigateToSettings: () => setState(() => _currentIndex = 3),
+      ),
       HistoryScreen(
         controller: widget.historyController,
         onLoadIntoCompose: (response) {
@@ -70,29 +76,11 @@ class _AppScaffoldState extends State<AppScaffold> {
         return Scaffold(
           appBar: AppAppBar(
             title: 'SKOPOS',
-            subtitle: 'Controlled AI Writing Agent',
             isBackendConnected: widget.settingsController.isBackendConnected,
             healthState: widget.settingsController.healthState,
             onTapStatus: () {
               widget.settingsController.checkBackendHealth(force: true);
             },
-            actions: [
-              IconButton(
-                icon: Icon(
-                  widget.themeController.isDarkMode
-                      ? Icons.light_mode_rounded
-                      : Icons.dark_mode_rounded,
-                  size: 20,
-                ),
-                tooltip: 'Toggle Theme',
-                onPressed: () {
-                  final next = widget.themeController.isDarkMode
-                      ? ThemeMode.light
-                      : ThemeMode.dark;
-                  widget.themeController.setThemeMode(next);
-                },
-              ),
-            ],
           ),
           drawer: AppDrawer(
             currentIndex: _currentIndex,

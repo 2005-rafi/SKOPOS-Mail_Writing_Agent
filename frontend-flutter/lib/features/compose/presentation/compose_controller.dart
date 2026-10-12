@@ -29,20 +29,34 @@ class ComposeController extends ChangeNotifier {
   GenerateResponse? _currentOutput;
   String? _errorMessage;
   SettingsModel _settings = const SettingsModel();
+  final List<Map<String, dynamic>> _chatTurns = [];
 
   ComposeState get state => _state;
   bool get isLoading => _state == ComposeState.generating || _state == ComposeState.refining;
   GenerateResponse? get currentOutput => _currentOutput;
   String? get errorMessage => _errorMessage;
   SettingsModel get settings => _settings;
+  List<Map<String, dynamic>> get chatTurns => List.unmodifiable(_chatTurns);
 
   void updateSettings(SettingsModel newSettings) {
     _settings = newSettings;
     notifyListeners();
   }
 
-  void loadFromHistory(GenerateResponse response) {
+  void resetChat() {
+    _currentOutput = null;
+    _chatTurns.clear();
+    _state = ComposeState.idle;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  void loadFromHistory(GenerateResponse response, [String? scenario]) {
     _currentOutput = response;
+    _chatTurns.clear();
+    if (scenario != null && scenario.isNotEmpty) {
+      _chatTurns.add({'type': 'user_initial', 'text': scenario});
+    }
     _state = ComposeState.success;
     _errorMessage = null;
     notifyListeners();
@@ -93,6 +107,8 @@ class ComposeController extends ChangeNotifier {
       onSuccess: (response) {
         healthManager?.markHealthyManually();
         _currentOutput = response;
+        _chatTurns.clear();
+        _chatTurns.add({'type': 'user_initial', 'text': cleanScenario});
         _state = ComposeState.success;
         _errorMessage = null;
         final historyPayload = {
@@ -164,6 +180,7 @@ class ComposeController extends ChangeNotifier {
       onSuccess: (response) {
         healthManager?.markHealthyManually();
         _currentOutput = response;
+        _chatTurns.add({'type': 'user_refine', 'text': cleanInstruction});
         _state = ComposeState.success;
         _errorMessage = null;
         final historyPayload = {
