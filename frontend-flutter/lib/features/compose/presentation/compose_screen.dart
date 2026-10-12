@@ -235,9 +235,15 @@ class _ComposeScreenState extends State<ComposeScreen> {
               isLoading: isLoading,
               onSend: _handleSend,
               onOpenSettings: widget.onNavigateToSettings ?? () {},
+              contentType: widget.controller.settings.contentType,
+              onContentTypeChanged: widget.controller.setContentType,
               hintText: currentOutput == null
-                  ? 'Describe what you need written...'
-                  : 'Request changes or refinements...',
+                  ? (widget.controller.settings.contentType == 'email'
+                      ? 'Describe what you need written in this email...'
+                      : 'Describe what you need written in this letter...')
+                  : (widget.controller.settings.contentType == 'email'
+                      ? 'Request changes or refinements to this email...'
+                      : 'Request changes or refinements to this letter...'),
             ),
           ],
         );

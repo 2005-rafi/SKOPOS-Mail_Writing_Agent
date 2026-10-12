@@ -43,6 +43,17 @@ class ComposeController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setContentType(String type) async {
+    if (_settings.contentType == type) return;
+    try {
+      final defaultPrefs = await settingsStore.getDefaultSettings(type);
+      _settings = defaultPrefs.copyWith(contentType: type);
+    } catch (_) {
+      _settings = _settings.copyWith(contentType: type);
+    }
+    notifyListeners();
+  }
+
   void resetChat() {
     _currentOutput = null;
     _chatTurns.clear();
