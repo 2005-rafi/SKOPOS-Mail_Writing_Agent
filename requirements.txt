@@ -1,0 +1,2 @@
+# Fallback for monorepo deployments
+-r backend/requirements.txt
