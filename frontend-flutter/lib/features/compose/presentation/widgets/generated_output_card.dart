@@ -34,41 +34,33 @@ class GeneratedOutputCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header Row with Metadata Badges
+          // Header: Document Type Indicator & Quick Action
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Wrap(
-                spacing: SpacingTokens.xs,
-                runSpacing: SpacingTokens.xs,
+              Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppBadge(
-                    label: '${response.provider.toUpperCase()} • ${response.model}',
-                    variant: AppBadgeVariant.brand,
-                    icon: Icons.memory_rounded,
+                  Icon(
+                    Icons.auto_awesome_rounded,
+                    size: ComponentTokens.iconSizeXs,
+                    color: semantic.actionPrimary,
                   ),
-                  AppBadge(
-                    label: '${response.wordCount} words',
-                    variant: AppBadgeVariant.neutral,
-                    icon: Icons.notes_rounded,
-                  ),
-                  if (response.validation.repaired)
-                    const AppBadge(
-                      label: 'Repaired (1 Pass)',
-                      variant: AppBadgeVariant.warning,
-                      icon: Icons.build_circle_outlined,
-                    )
-                  else
-                    const AppBadge(
-                      label: 'Validated',
-                      variant: AppBadgeVariant.success,
-                      icon: Icons.verified_outlined,
+                  const SizedBox(width: SpacingTokens.xs),
+                  Text(
+                    output.subject != null && output.subject!.isNotEmpty ? 'EMAIL DRAFT' : 'COMMUNICATION DRAFT',
+                    style: textTheme.labelSmall?.copyWith(
+                      color: semantic.actionPrimary,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.6,
                     ),
+                  ),
                 ],
               ),
               AppIconButton(
                 icon: Icons.copy_all_rounded,
                 tooltip: 'Copy Full Document',
+                size: ComponentTokens.iconSizeSm,
                 onPressed: () => _copyAll(context),
               ),
             ],
@@ -166,29 +158,68 @@ class GeneratedOutputCard extends StatelessWidget {
 
           const AppDivider(),
 
-          // Bottom Action Row
+          // Bottom Footer: Metadata Chips + Action Buttons (No overflow)
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              AppIconButton(
-                icon: Icons.content_copy_rounded,
-                tooltip: 'Copy Body',
-                onPressed: () {
-                  ClipboardHelper.copyPlainText(TextSanitizer.toPlainText(output.body));
-                  AppSnackbar.show(
-                    context,
-                    message: 'Body copied to clipboard',
-                    type: AppSnackbarType.success,
-                  );
-                },
+              Expanded(
+                child: Wrap(
+                  spacing: SpacingTokens.xs,
+                  runSpacing: SpacingTokens.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    AppBadge(
+                      label: '${response.provider.toUpperCase()} · ${response.model}',
+                      variant: AppBadgeVariant.brand,
+                      icon: Icons.memory_rounded,
+                    ),
+                    AppBadge(
+                      label: '${response.wordCount} words',
+                      variant: AppBadgeVariant.neutral,
+                      icon: Icons.notes_rounded,
+                    ),
+                    if (response.validation.repaired)
+                      const AppBadge(
+                        label: 'Repaired',
+                        variant: AppBadgeVariant.warning,
+                        icon: Icons.build_circle_outlined,
+                      )
+                    else
+                      const AppBadge(
+                        label: 'Validated',
+                        variant: AppBadgeVariant.success,
+                        icon: Icons.verified_outlined,
+                      ),
+                  ],
+                ),
               ),
               const SizedBox(width: SpacingTokens.xs),
-              AppIconButton(
-                icon: Icons.done_all_rounded,
-                tooltip: 'Copy Full Document',
-                backgroundColor: semantic.actionPrimary.withValues(alpha: 0.12),
-                color: semantic.actionPrimary,
-                onPressed: () => _copyAll(context),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppIconButton(
+                    icon: Icons.content_copy_rounded,
+                    tooltip: 'Copy Body',
+                    size: ComponentTokens.iconSizeSm,
+                    onPressed: () {
+                      ClipboardHelper.copyPlainText(TextSanitizer.toPlainText(output.body));
+                      AppSnackbar.show(
+                        context,
+                        message: 'Body copied to clipboard',
+                        type: AppSnackbarType.success,
+                      );
+                    },
+                  ),
+                  const SizedBox(width: SpacingTokens.xs),
+                  AppIconButton(
+                    icon: Icons.done_all_rounded,
+                    tooltip: 'Copy Full Document',
+                    size: ComponentTokens.iconSizeSm,
+                    backgroundColor: semantic.actionPrimary.withValues(alpha: 0.12),
+                    color: semantic.actionPrimary,
+                    onPressed: () => _copyAll(context),
+                  ),
+                ],
               ),
             ],
           ),

@@ -20,6 +20,8 @@ class ChatMessageBubble extends StatelessWidget {
     final semantic = context.semanticColors;
     final textTheme = Theme.of(context).textTheme;
 
+    final words = message.trim().split(RegExp(r'\s+')).where((s) => s.isNotEmpty).length;
+
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
@@ -46,6 +48,14 @@ class ChatMessageBubble extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
+            Text(
+              message,
+              style: textTheme.bodyMedium?.copyWith(
+                color: semantic.textPrimary,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.xs),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -56,22 +66,22 @@ class ChatMessageBubble extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Text(
-                  isRefinement ? 'Refinement Request' : 'Goal / Intent',
+                  isRefinement ? 'Refinement' : 'Goal / Intent',
                   style: textTheme.labelSmall?.copyWith(
                     color: semantic.actionPrimary,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.3,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '• $words words',
+                  style: textTheme.labelSmall?.copyWith(
+                    color: semantic.textMuted,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              message,
-              style: textTheme.bodyMedium?.copyWith(
-                color: semantic.textPrimary,
-                height: 1.4,
-              ),
             ),
           ],
         ),
