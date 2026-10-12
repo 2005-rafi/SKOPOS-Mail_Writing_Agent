@@ -1,0 +1,108 @@
+# ==========================================
+# SKOPOS - Root Git Ignore Configuration
+# Optimized for Python Backend & Flutter Frontend
+# ==========================================
+
+# Development Documentation (Local Only)
+docs/
+
+# Agent, Tooling & Knowledge Graph Directories
+.agents/
+graphify-out/
+.system_generated/
+.gemini/
+
+# Environment Variables, Credentials & Secrets
+.env
+.env.*
+*.env
+*.key
+*.pem
+*.p12
+*.keystore
+*.jks
+credentials.json
+firebase-adminsdk*.json
+serviceAccountKey.json
+google-services.json
+GoogleService-Info.plist
+
+# ------------------------------------------
+# Python Backend
+# ------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/.venv/
+backend/venv/
+.venv/
+venv/
+ENV/
+env/
+backend/dist/
+backend/build/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+
+# ------------------------------------------
+# Flutter & Dart
+# ------------------------------------------
+.dart_tool/
+frontend-flutter/.dart_tool/
+frontend-flutter/.fvm/
+frontend-flutter/build/
+build/
+.pub-cache/
+.pub/
+
+# Flutter Android
+frontend-flutter/android/.gradle/
+frontend-flutter/android/local.properties
+frontend-flutter/android/captures/
+frontend-flutter/android/app/build/
+frontend-flutter/android/.idea/
+
+# Flutter iOS
+frontend-flutter/ios/Flutter/ephemeral/
+frontend-flutter/ios/Flutter/Generated.xcconfig
+frontend-flutter/ios/Flutter/flutter_export_environment.sh
+frontend-flutter/ios/Pods/
+frontend-flutter/ios/.symlinks/
+
+# Flutter Desktop (macOS, Linux, Windows)
+frontend-flutter/linux/flutter/ephemeral/
+frontend-flutter/macos/Flutter/ephemeral/
+frontend-flutter/windows/flutter/ephemeral/
+
+# Binaries & Outputs
+*.apk
+*.aab
+*.ipa
+*.app
+*.exe
+*.dll
+
+# ------------------------------------------
+# IDEs & System Caches
+# ------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini

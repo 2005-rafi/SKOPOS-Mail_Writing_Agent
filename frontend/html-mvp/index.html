@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKOPOS — Controlled AI Writing Agent</title>
+  <meta name="description" content="Goal-oriented email and letter writing agent with agentic validation and repair.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.ico">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Top Navigation Bar -->
+    <header class="top-navbar">
+      <div class="brand-wrapper">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+        </div>
+        <div class="brand-title-group">
+          <h1>SKOPOS</h1>
+          <span class="brand-tagline">Goal-Oriented AI Writing Engine</span>
+        </div>
+      </div>
+
+      <div class="status-badge-group">
+        <div class="status-pill" id="backendStatusPill">
+          <span class="status-dot"></span>
+          <span id="backendStatusText">Checking Connection...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="write">
+        <span>✍️</span> Generate
+      </button>
+      <button class="tab-btn" data-tab="rewrite">
+        <span>🔄</span> Rewrite
+      </button>
+      <button class="tab-btn" data-tab="history">
+        <span>📜</span> Local History
+      </button>
+      <button class="tab-btn" data-tab="settings">
+        <span>⚙️</span> Credentials &amp; Settings
+      </button>
+    </nav>
+
+    <!-- Main Content Grid -->
+    <main class="main-grid">
+      <!-- Left Column: Inputs & Controls -->
+      <section class="left-col">
+        
+        <!-- Tab: Generate -->
+        <div class="tab-pane active" id="tab-write">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Describe Scenario</h2>
+                <p class="card-subtitle">Provide only the core intent or problem; preferences are applied automatically.</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="scenarioInput" class="form-label">Scenario or Purpose</label>
+              <textarea id="scenarioInput" class="form-control" placeholder="e.g., Supplier has not delivered the ordered raw materials for one month despite purchase order #402. Request urgent delivery by Friday."></textarea>
+            </div>
+
+            <!-- Provider & Model Selection -->
+            <div class="settings-grid" style="margin-bottom: var(--space-3);">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="providerSelect" class="form-label">AI Provider</label>
+                <select id="providerSelect" class="form-control">
+                  <option value="groq">Groq Cloud</option>
+                  <option value="gemini">Google Gemini</option>
+                  <option value="mock">Mock Engine (Offline)</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="modelSelectGroup" style="margin-bottom: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label for="modelSelect" class="form-label" style="margin-bottom: 0;">Model Selection</label>
+                  <button type="button" id="modelRefreshBtn" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px; height: 22px;" title="Query live models permitted for your API key">🔄 Live Sync</button>
+                </div>
+                <select id="modelSelect" class="form-control">
+                  <option value="llama-3.1-8b-instant" selected>llama-3.1-8b-instant (Free Tier Recommended)</option>
+                  <option value="llama3-8b-8192">llama3-8b-8192 (Free Tier)</option>
+                  <option value="mixtral-8x7b-32768">mixtral-8x7b-32768 (Free Tier)</option>
+                  <option value="gemma2-9b-it">gemma2-9b-it (Google 9B Free Tier)</option>
+                  <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Tier 1 / Pro)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Configuration Grid -->
+            <div class="settings-grid">
+              <div class="form-group">
+                <label for="contentTypeSelect" class="form-label">Document Type</label>
+                <select id="contentTypeSelect" class="form-control">
+                  <option value="email">Business Email</option>
+                  <option value="letter">Formal Letter</option>
+                  <option value="short_message">Short Message</option>
+                  <option value="announcement">Announcement</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="toneSelect" class="form-label">Tone</label>
+                <select id="toneSelect" class="form-control">
+                  <option value="professional">Professional</option>
+                  <option value="formal">Formal</option>
+                  <option value="friendly">Friendly</option>
+                  <option value="direct">Direct &amp; Firm</option>
+                  <option value="persuasive">Persuasive</option>
+                  <option value="academic">Academic</option>
+                  <option value="sympathetic">Sympathetic</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="styleSelect" class="form-label">Style</label>
+                <select id="styleSelect" class="form-control">
+                  <option value="concise">Concise</option>
+                  <option value="executive">Executive</option>
+                  <option value="diplomatic">Diplomatic</option>
+                  <option value="detailed">Detailed</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="languageSelect" class="form-label">Language</label>
+                <select id="languageSelect" class="form-control">
+                  <option value="English">English</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="French">French</option>
+                  <option value="German">German</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Japanese">Japanese</option>
+                  <option value="Arabic">Arabic</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Toggles Row -->
+            <div class="toggles-row">
+              <label class="checkbox-label">
+                <input type="checkbox" id="subjectCheck" checked> Subject Line
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="salutationCheck" checked> Salutation Greeting
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="closingCheck" checked> Closing Sign-off
+              </label>
+            </div>
+
+            <!-- Length Slider -->
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
+                <label for="maxWordsSlider" class="form-label">Maximum Word Limit</label>
+                <span class="slider-value" id="maxWordsVal">100 words</span>
+              </div>
+              <div class="slider-group">
+                <input type="range" id="maxWordsSlider" min="30" max="250" step="10" value="100">
+              </div>
+            </div>
+
+            <button id="generateBtn" class="btn btn-primary">
+              Generate Communication
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab: Rewrite -->
+        <div class="tab-pane" id="tab-rewrite" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Rewrite Draft</h2>
+                <p class="card-subtitle">Paste rough notes or drafted text to polish it according to your configuration.</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="rewriteContentInput" class="form-label">Existing Draft / Rough Text</label>
+              <textarea id="rewriteContentInput" class="form-control" placeholder="Paste rough draft here..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="rewriteInstructionInput" class="form-label">Emphasis / Specific Instruction (Optional)</label>
+              <input type="text" id="rewriteInstructionInput" class="form-control" placeholder="e.g., Make it firmer, emphasize the Friday deadline.">
+            </div>
+
+            <button id="rewriteBtn" class="btn btn-primary">
+              Rewrite Draft
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab: History -->
+        <div class="tab-pane" id="tab-history" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Offline Writing History</h2>
+                <p class="card-subtitle">Saved locally on your device. Zero cloud dependency for reading.</p>
+              </div>
+              <button id="clearHistoryBtn" class="btn btn-secondary btn-sm">Clear All</button>
+            </div>
+
+            <div class="form-group">
+              <input type="text" id="historySearchInput" class="form-control" placeholder="Search saved emails &amp; letters...">
+            </div>
+
+            <div class="history-list" id="historyList">
+              <!-- Rendered via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Settings -->
+        <div class="tab-pane" id="tab-settings" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h2 class="card-title">Credentials &amp; Settings</h2>
+                <p class="card-subtitle">Keys are stored solely in your browser's local storage and sent transiently.</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="groqKeyInput" class="form-label">Groq API Key (gsk_...)</label>
+              <input type="password" id="groqKeyInput" class="form-control" placeholder="Enter your Groq API key">
+            </div>
+
+            <div class="form-group">
+              <label for="geminiKeyInput" class="form-label">Google Gemini API Key (AIza...)</label>
+              <input type="password" id="geminiKeyInput" class="form-control" placeholder="Enter your Gemini API key">
+            </div>
+
+            <div class="form-group">
+              <label for="apiBaseUrlInput" class="form-label">Backend API URL</label>
+              <input type="text" id="apiBaseUrlInput" class="form-control" value="http://localhost:8000/api/v1">
+            </div>
+
+            <button id="saveSettingsBtn" class="btn btn-primary">
+              Save Credentials Locally
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Right Column: Live Output & Refinement -->
+      <section class="right-col">
+        <div class="card" style="height: 100%;">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">Generated Communication</h2>
+              <p class="card-subtitle">Deterministic &amp; semantic validation guaranteed.</p>
+            </div>
+            <div style="display:flex; gap: var(--spacing-2);">
+              <button id="copyAllBtn" class="btn btn-secondary btn-sm">Copy All</button>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="emptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+            <h3>Ready to Write</h3>
+            <p>Describe a scenario or choose a rewrite draft on the left to generate communication.</p>
+          </div>
+
+          <!-- Output Content Area -->
+          <div class="output-container" id="outputContainer" style="display: none;">
+            <div class="output-meta-bar">
+              <span class="badge badge-info" id="metaProviderBadge">GROQ • Llama 3.3</span>
+              <span class="badge badge-info" id="metaWordCountBadge">78 words</span>
+              <span class="badge badge-success" id="metaValidationBadge">Validated</span>
+            </div>
+
+            <div class="document-view">
+              <div class="doc-subject" id="docSubjectWrapper">
+                <div>Subject: <span id="docSubject"></span></div>
+                <button id="copySubjectBtn" class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;">Copy</button>
+              </div>
+              <div class="doc-salutation" id="docSalutation"></div>
+              <div class="doc-body" id="docBody"></div>
+              <div class="doc-closing" id="docClosing"></div>
+            </div>
+
+            <div style="display:flex; justify-content: flex-end;">
+              <button id="copyBodyBtn" class="btn btn-secondary btn-sm">Copy Body Only</button>
+            </div>
+
+            <!-- Conversational Refinement -->
+            <div class="refinement-box" id="refinementBox" style="display: none;">
+              <label for="refineInstructionInput" class="form-label">Conversational Refinement</label>
+              <div class="refinement-input-row">
+                <input type="text" id="refineInstructionInput" class="form-control" placeholder="e.g., Make it firmer, shorten the second sentence...">
+                <button id="refineBtn" class="btn btn-primary btn-sm" style="height: var(--input-height); width: 100px;">
+                  Refine
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts (versioned to prevent stale browser caching) -->
+  <script src="js/config.js?v=1.1.0"></script>
+  <script src="js/storage.js?v=1.1.0"></script>
+  <script src="js/api_client.js?v=1.1.0"></script>
+  <script src="js/markdown.js?v=1.1.0"></script>
+  <script src="js/app.js?v=1.1.0"></script>
+</body>
+</html>
