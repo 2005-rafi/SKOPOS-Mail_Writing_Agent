@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:skopos/core/design_system/app_theme.dart';
 import 'package:skopos/features/compose/domain/compose_models.dart';
 import 'package:skopos/shared/widgets/app_bouncy_tap.dart';
+import 'package:skopos/shared/widgets/app_dropdown.dart';
 import 'package:skopos/shared/widgets/app_segmented_control.dart';
 import 'package:skopos/shared/widgets/settings_group.dart';
 import 'package:skopos/shared/widgets/writing_preferences_editor.dart';
@@ -136,6 +137,37 @@ void main() {
       await tester.tap(find.text('Bouncy Button'));
       await tester.pumpAndSettle();
       expect(tapped, isTrue);
+    });
+
+    testWidgets('AppDropdown safely falls back when selectedValue does not match any item', (tester) async {
+      String? selectedValue = 'llama3-8b-8192'; // Stale Groq model
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.lightTheme,
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (context, setState) {
+                return AppDropdown<String>(
+                  label: 'Model Selection',
+                  selectedValue: selectedValue,
+                  items: const [
+                    AppDropdownOption(value: 'gemini-1.5-flash', label: 'Gemini 1.5 Flash'),
+                    AppDropdownOption(value: 'gemini-1.5-pro', label: 'Gemini 1.5 Pro'),
+                  ],
+                  onChanged: (val) {
+                    setState(() => selectedValue = val);
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      // Should not throw Flutter assertion error and should display the first available item as effective fallback
+      expect(find.text('Gemini 1.5 Flash'), findsOneWidget);
+      expect(tester.takeException(), isNull);
     });
   });
 }

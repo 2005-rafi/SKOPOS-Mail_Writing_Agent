@@ -42,6 +42,11 @@ class AppDropdown<T> extends StatelessWidget {
     final semantic = context.semanticColors;
     final textTheme = Theme.of(context).textTheme;
 
+    final hasMatchingItem = items.any((item) => item.value == selectedValue);
+    final effectiveValue = hasMatchingItem
+        ? selectedValue
+        : (items.isNotEmpty ? items.first.value : null);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -69,7 +74,7 @@ class AppDropdown<T> extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: SpacingTokens.md),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<T>(
-              value: selectedValue,
+              value: effectiveValue,
               isExpanded: true,
               hint: hint != null
                   ? Text(

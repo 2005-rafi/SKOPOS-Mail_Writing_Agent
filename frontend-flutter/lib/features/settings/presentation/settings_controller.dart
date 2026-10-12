@@ -102,8 +102,16 @@ class SettingsController extends ChangeNotifier {
   Future<void> setActiveProvider(String provider) async {
     _activeProvider = provider;
     await settingsStore.setActiveProvider(provider);
-    await fetchModelsForProvider(provider);
+
+    // Immediately switch to valid fallback models for the newly selected provider
+    _fallbackToStaticModels(provider);
+    final savedModel = await settingsStore.getSelectedModel(provider);
+    if (savedModel != null && _availableModels.any((m) => m.id == savedModel)) {
+      _selectedModel = savedModel;
+    }
     notifyListeners();
+
+    await fetchModelsForProvider(provider);
   }
 
   Future<void> setModel(String modelId) async {
@@ -175,11 +183,9 @@ class SettingsController extends ChangeNotifier {
               );
             }).toList();
 
-            final savedModel = _availableModels.firstWhere(
-              (m) => m.id == data['defaultModel'],
-              orElse: () => _availableModels.first,
-            );
-            _selectedModel = savedModel.id;
+            final currentMatch = _availableModels.where((m) => m.id == _selectedModel).firstOrNull;
+            final defaultMatch = _availableModels.where((m) => m.id == data['defaultModel']).firstOrNull;
+            _selectedModel = currentMatch?.id ?? defaultMatch?.id ?? _availableModels.first.id;
             settingsStore.setSelectedModel(provider, _selectedModel);
             return;
           }
