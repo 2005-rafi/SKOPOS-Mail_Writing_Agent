@@ -6,12 +6,14 @@ services:
     plan: free
     region: oregon
     buildCommand: "pip install --no-cache-dir -r requirements.txt"
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1 --limit-concurrency 50 --timeout-keep-alive 30"
+    startCommand: "python run.py"
     healthCheckPath: /api/v1/health
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
+      - key: PYTHONPATH
+        value: ".:backend"
       - key: ENVIRONMENT
         value: production
       - key: APP_NAME

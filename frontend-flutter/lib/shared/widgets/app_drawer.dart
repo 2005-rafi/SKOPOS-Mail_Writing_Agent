@@ -237,7 +237,7 @@ class AppDrawer extends StatelessWidget {
                       ),
                       Switch(
                         value: themeController.isDarkMode,
-                        activeColor: semantic.actionPrimary,
+                        activeThumbColor: semantic.actionPrimary,
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         onChanged: (val) {
                           themeController.setThemeMode(

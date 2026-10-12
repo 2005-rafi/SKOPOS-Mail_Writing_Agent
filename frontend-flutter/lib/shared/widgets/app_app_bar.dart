@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/design_system/component_tokens.dart';
 import '../../core/design_system/layout_tokens.dart';
 import '../../core/design_system/semantic_colors.dart';
 import '../../core/design_system/shape_tokens.dart';
