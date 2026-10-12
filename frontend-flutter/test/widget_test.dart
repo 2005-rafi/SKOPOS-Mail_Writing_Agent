@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skopos/app/app.dart';
 import 'package:skopos/app/bootstrap.dart';
+import 'package:skopos/core/config/app_config.dart';
 import 'package:skopos/core/design_system/theme_mode_controller.dart';
 import 'package:skopos/core/network/api_client.dart';
 import 'package:skopos/core/storage/history_storage_service.dart';
@@ -25,7 +26,7 @@ void main() {
     final settingsStore = LocalSettingsStore(prefs);
     final historyStorage = HistoryStorageService(prefs);
     final themeController = ThemeModeController(prefs);
-    final apiClient = ApiClient(baseUrl: 'http://127.0.0.1:8000/api/v1');
+    final apiClient = ApiClient(baseUrl: AppConfig.defaultApiBaseUrl);
 
     final composeRepo = ComposeRepository(apiClient);
     final rewriteRepo = RewriteRepository(apiClient);

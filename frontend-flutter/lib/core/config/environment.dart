@@ -14,13 +14,13 @@ class Environment {
 
   static const Environment development = Environment._(
     type: EnvironmentType.dev,
-    apiBaseUrl: AppConfig.defaultApiBaseUrl,
+    apiBaseUrl: 'http://localhost:8000/api/v1',
   );
 
   static const Environment production = Environment._(
     type: EnvironmentType.prod,
-    apiBaseUrl: AppConfig.defaultApiBaseUrl,
+    apiBaseUrl: AppConfig.productionApiBaseUrl,
   );
 
-  static Environment current = development;
+  static Environment current = production;
 }

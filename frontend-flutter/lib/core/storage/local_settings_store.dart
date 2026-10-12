@@ -41,7 +41,12 @@ class LocalSettingsStore {
 
   Future<String> getApiBaseUrl() async {
     final prefs = await _getPrefs();
-    return prefs.getString(_keyApiBaseUrl) ?? AppConfig.defaultApiBaseUrl;
+    final stored = prefs.getString(_keyApiBaseUrl);
+    if (stored == null || stored.contains('localhost') || stored.contains('127.0.0.1')) {
+      await prefs.setString(_keyApiBaseUrl, AppConfig.productionApiBaseUrl);
+      return AppConfig.productionApiBaseUrl;
+    }
+    return stored;
   }
 
   Future<void> setApiBaseUrl(String url) async {

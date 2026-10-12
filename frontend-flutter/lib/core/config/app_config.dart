@@ -5,9 +5,10 @@ abstract class AppConfig {
   static const String version = '1.0.0';
 
   // Network defaults
-  static const String defaultApiBaseUrl = 'http://localhost:8000/api/v1';
-  static const Duration requestTimeout = Duration(seconds: 30);
-  static const Duration connectTimeout = Duration(seconds: 10);
+  static const String productionApiBaseUrl = 'https://skopos-backend-uzfu.onrender.com/api/v1';
+  static const String defaultApiBaseUrl = productionApiBaseUrl;
+  static const Duration requestTimeout = Duration(seconds: 45);
+  static const Duration connectTimeout = Duration(seconds: 15);
 
   // Content configuration defaults
   static const int defaultMaxWords = 150;

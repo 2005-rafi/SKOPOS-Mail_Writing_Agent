@@ -39,7 +39,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late final TextEditingController _groqKeyController;
   late final TextEditingController _geminiKeyController;
-  late final TextEditingController _urlController;
   bool _obscureGroq = true;
   bool _obscureGemini = true;
 
@@ -55,7 +54,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _groqKeyController = TextEditingController(text: widget.controller.groqKey);
     _geminiKeyController = TextEditingController(text: widget.controller.geminiKey);
-    _urlController = TextEditingController(text: widget.controller.apiBaseUrl);
 
     _emailSettings = widget.controller.defaultEmailSettings;
     _letterSettings = widget.controller.defaultLetterSettings;
@@ -65,39 +63,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void dispose() {
     _groqKeyController.dispose();
     _geminiKeyController.dispose();
-    _urlController.dispose();
     super.dispose();
   }
 
   void _saveCredentials() async {
     await widget.controller.saveGroqKey(_groqKeyController.text);
     await widget.controller.saveGeminiKey(_geminiKeyController.text);
-    await widget.controller.saveApiBaseUrl(_urlController.text);
     if (mounted) {
       AppSnackbar.show(
         context,
-        message: 'Settings and credentials saved successfully',
+        message: 'AI credentials saved successfully',
         type: AppSnackbarType.success,
       );
-    }
-  }
-
-  void _testConnection() async {
-    final connected = await widget.controller.checkBackendHealth(force: true);
-    if (mounted) {
-      if (connected) {
-        AppSnackbar.show(
-          context,
-          message: 'Backend verified! Status: Healthy & Active',
-          type: AppSnackbarType.success,
-        );
-      } else {
-        AppSnackbar.show(
-          context,
-          message: 'Failed to reach backend server. Verify URL and network connectivity.',
-          type: AppSnackbarType.error,
-        );
-      }
     }
   }
 
@@ -176,6 +153,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       label: 'v${AppConfig.version}',
                                       variant: AppBadgeVariant.neutral,
                                     ),
+                                    const Spacer(),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: statusColor.withValues(alpha: 0.12),
+                                        borderRadius: ShapeTokens.borderRadiusFull,
+                                        border: Border.all(
+                                          color: statusColor.withValues(alpha: 0.3),
+                                          width: ShapeTokens.borderWidthHairline,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: 6,
+                                            height: 6,
+                                            decoration: BoxDecoration(
+                                              color: statusColor,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            statusLabel,
+                                            style: textTheme.labelSmall?.copyWith(
+                                              color: statusColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 2),
@@ -187,7 +197,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  'Stateless Python Backend • Offline-First Client',
+                                  'Production Cloud Engine • Presentation Client',
                                   style: textTheme.labelSmall?.copyWith(
                                     color: semantic.textMuted,
                                   ),
@@ -234,62 +244,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ],
                         selectedValue: widget.themeController.themeMode,
                         onSelected: (mode) => widget.themeController.setThemeMode(mode),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: SpacingTokens.lg),
-
-                  // 3. Backend & Network Configuration
-                  SettingsGroup(
-                    title: 'Backend & Hosting',
-                    icon: Icons.cloud_outlined,
-                    trailing: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.12),
-                        borderRadius: ShapeTokens.borderRadiusFull,
-                        border: Border.all(
-                          color: statusColor.withValues(alpha: 0.3),
-                          width: ShapeTokens.borderWidthHairline,
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 6,
-                            height: 6,
-                            decoration: BoxDecoration(
-                              color: statusColor,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            statusLabel,
-                            style: textTheme.labelSmall?.copyWith(
-                              color: statusColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    children: [
-                      AppTextField(
-                        controller: _urlController,
-                        label: 'FastAPI Backend URL',
-                        hint: 'https://skopos-backend.onrender.com/api/v1',
-                        helperText: 'Optimized for Render.com free tier cold starts and local development',
-                      ),
-                      const SizedBox(height: SpacingTokens.md),
-                      AppButton(
-                        text: healthState == BackendHealthState.wakingUp ? 'Waking Server...' : 'Test Connection / Wake Server',
-                        variant: AppButtonVariant.outlined,
-                        leadingIcon: Icons.refresh_rounded,
-                        isFullWidth: true,
-                        isLoading: healthState == BackendHealthState.wakingUp || healthState == BackendHealthState.checking,
-                        onPressed: _testConnection,
                       ),
                     ],
                   ),

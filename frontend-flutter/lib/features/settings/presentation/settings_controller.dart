@@ -42,7 +42,7 @@ class SettingsController extends ChangeNotifier {
   String _selectedModel = '';
   String _groqKey = '';
   String _geminiKey = '';
-  String _apiBaseUrl = AppConfig.defaultApiBaseUrl;
+  String _apiBaseUrl = AppConfig.productionApiBaseUrl;
   bool _isSyncingModels = false;
   List<ModelOption> _availableModels = [];
   SettingsModel _defaultEmailSettings = const SettingsModel(contentType: 'email');
