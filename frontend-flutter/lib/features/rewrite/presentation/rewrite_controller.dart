@@ -58,7 +58,7 @@ class RewriteController extends ChangeNotifier {
     final model = await settingsStore.getSelectedModel(provider);
     String apiKey = '';
 
-    if (provider != 'mock') {
+    if (provider != 'mock' && provider != 'on_device') {
       apiKey = await secureStorage.getApiKey(provider) ?? '';
       if (apiKey.isEmpty) {
         _errorMessage = 'Please enter your ${provider.toUpperCase()} API key in Settings.';
